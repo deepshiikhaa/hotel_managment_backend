@@ -1,7 +1,9 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const User = require("./src/models/User")
-const { register, login, findUser } = require("./src/Controllers/Users")
+
+require('dotenv').config()
+const { register, login, findUser  } = require("./src/Controllers/Users")
 const server = express()
 const cors = require("cors")
 const { verifyToken, validateForm, isValidated } = require("./src/Middlewares")
@@ -11,6 +13,7 @@ const http = require("http");
 const app = http.createServer(server)
 const {Server} = require ("socket.io");
 const { Socket } = require("dgram")
+const { sendEmail } = require("./src/Helper/Email")
 const io = new Server(app);
 
 server.use(express.json())
@@ -23,10 +26,10 @@ server.get("/", (req, res)=> {
   })
 })
 
-server.post("/register",register)
+server.post("/register",register , sendEmail)
 
 server.post("/login",login)
-server.post("/addForm",validateForm,isValidated,addForm)
+server.post("/addForm",validateForm,isValidated,addForm ,sendEmail)
   
   
 server.get("/get-user",verifyToken,findUser)
@@ -46,13 +49,14 @@ io.on("connection",Socket=>{
   })
 })
 
+ const port = process.env.PORT
 
-
-       app.listen("3000",()=>{
+       app.listen(port,()=>{
     console.log("server started")
 })
 
-mongoose.connect("mongodb://localhost:27017/test")
+const mongodb =process.env.MONGODB_url
+mongoose.connect(mongodb)
 .then(data => {
      console.log("Database Connected");
 })

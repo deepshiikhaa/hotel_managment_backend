@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 const user = require("../models/User")
 
 
-exports.register = async (req,res) => {
+exports.register = async (req,res,next) => {
 
    
 
@@ -22,8 +22,9 @@ console.log(req.body)
     })
     if(!eUser){
         _user.save().then(newUser=>{
-           return res.status(201).json({message:"Account created successfully"})
-    
+           req.subject = "User Registration"
+           req.text = "Signed up Successfully"
+           next()
         }).
         catch(error=> {
          return  res.status(400).json
