@@ -80,6 +80,19 @@ if(eUser){
 
 }
 
+exports.updateUser = async (req,res) => {
+try {
+    const newData = req.body;
+    const updateUser = await User . findByIdAndUpdate(req.id,newData)
+    return res.status (200) .json ({updateUser})
+    
+} catch (error) {
+    return res.status (400) .json ({error})
+}
+
+}
+
+
 exports.findUser = async (req,res) =>{
     const user = await user.findById(req.id)
     return res.status(200).json({user})

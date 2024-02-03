@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const User = require("./src/models/User")
 
 require('dotenv').config()
-const { register, login, findUser  } = require("./src/Controllers/Users")
+const { register, login, findUser, updateUser  } = require("./src/Controllers/Users")
 const server = express()
 const cors = require("cors")
 const { verifyToken, validateForm, isValidated } = require("./src/Middlewares")
@@ -34,6 +34,12 @@ server.post("/addForm",validateForm,isValidated,addForm ,sendEmail)
   
 server.get("/get-user",verifyToken,findUser)
 
+server.get("/get-product/:id" , (req ,res) => {
+  res.send(req.params.id)
+})
+
+server.put("/update-user",verifyToken , updateUser)
+
 
 io.on("connection",Socket=>{
   console.log ("new user connected");
@@ -55,8 +61,7 @@ io.on("connection",Socket=>{
     console.log("server started")
 })
 
-const mongodb =process.env.MONGODB_url
-mongoose.connect(mongodb)
-.then(data => {
-     console.log("Database Connected");
-})
+
+mongoose.connect(`mongodb://${process.env.MONGOUSER}:${process.env.MONGOPASS}@ac-kmub8ez-shard-00-00.w7plv4c.mongodb.net:27017,ac-kmub8ez-shard-00-01.w7plv4c.mongodb.net:27017,ac-kmub8ez-shard-00-02.w7plv4c.mongodb.net:27017/?ssl=true&replicaSet=atlas-xlt7wh-shard-0&authSource=admin&retryWrites=true&w=majority`)
+ .then(()=>console.log('Connected to Mongoose'))
+ .catch(err => console.log(err));
